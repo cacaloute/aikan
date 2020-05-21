@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ 
+
+<mapper namespace="com.aikan.mapping.CommentTMapper">
+	
+	
+	<resultMap type="CommentT" id="commentTResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="commentId" column="commentId"/>
+		<!-- 用result属性来映射非主键字段 -->
+		<result property="bookId" column="bookId"/>
+		<result property="userId" column="userId"/>
+		<result property="commentTitle" column="commentTitle"/>
+		<result property="commentConnent" column="commentConnent"/>
+		<result property="commentDate" column="commentDate"/>
+		<result property="commentedId" column="commentedId"/>
+		<result property="parentId" column="parentId"/>
+		<result property="commentdiv" column="commentdiv"/>
+	</resultMap>
+	
+	
+	<!-- 根据评论编号查找评论-->
+	<select id="maxComments"  resultType="int">
+		select max(commentId) from commentT 
+  	</select>
+  	
+  	<!-- 所有-->
+	<select id="selectAllComments"  resultMap="commentTResultMap">
+		select * from commentT 
+  	</select>
+  	
+	<!-- 根据评论编号查找评论-->
+	<select id="selectOneCommentById" parameterType="int" resultMap="commentTResultMap">
+		select * from commentT where commentId = #{commentId}
+  	</select>
+  	
+  	<!-- 根据评论内容查找评论-->
+	<select id="selectOneCommentByCommentConnent" parameterType="CommentT" resultMap="commentTResultMap">
+		select * from commentT where commentConnent = #{commentConnent} and bookId=#{bookId}
+  	</select>
+  	
+  	<!-- 根据帖子标题查找帖子-->
+	<select id="selectOneCommentByCommentTitle" parameterType="CommentT" resultMap="commentTResultMap">
+		select * from commentT where commentTitle = #{commentTitle} 
+  	</select>
+  	
+  	<!-- 根据评论区名称查找帖子-->
+	<select id="selectAllCommentsByCommentDiv" parameterType="CommentT" resultMap="commentTResultMap">
+		select * from commentT where commentdiv = #{commentdiv} order by to_date(commentDate,'yyyy-mm-dd hh24:mi:ss') desc
+  	</select>
+  	
+	<!-- 根据父id,查询所有的评论-->
+	<select id="selectAllCommentsByParentId" parameterType="int" resultMap="commentTResultMap">
+		select * from commentT where parentId = #{parentId} order by to_date(commentDate,'yyyy-mm-dd hh24:mi:ss') desc
+  	</select>
+  	
+  	<!-- 根据被评论书籍的Id,查询所有的评论-->
+	<select id="selectAllCommentsBookId" parameterType="int" resultMap="commentTResultMap">
+		select * from commentT where bookId = #{bookId} order by to_date(commentDate,'yyyy-mm-dd hh24:mi:ss') desc
+  	</select>
+  
+	  	  	
+	<!-- 添加评论 --> 	
+	<insert id="insert" parameterType="CommentT">
+  		insert into commentT(commentId,bookId,userId,commentTitle,commentConnent,commentDate,commentedId,parentId,commentdiv) 
+  		values(#{commentId},#{bookId,jdbcType=NUMERIC},#{userId},#{commentTitle},#{commentConnent},#{commentDate},#{commentedId,jdbcType=NUMERIC},#{parentId,jdbcType=NUMERIC},#{commentdiv})
+  	</insert>
+  	
+  	<update id="update"  parameterType="CommentT">
+  		update commentT
+  		set userId = #{userId},commentTitle = #{commentTitle},commentConnent = #{commentConnent},
+  			commentDate = #{commentDate},bookId = #{bookId},
+  		where commentedId=#{commentedId}
+  	</update>
+  	
+  	  	<!-- 根据章节号删除一个章节 -->
+  	<delete id="deleteOne" parameterType="int">
+  		delete from commentT 
+  		where commentId=#{commentId}
+  	</delete>
+  	
+  	<!-- 根据评论编号删除一组旧评论-->
+  	<delete id="deleteByIds">
+  		delete from commentT where commentId in
+  		<foreach collection="array" index="i" item="commentId" open="(" separator="," close=")">
+  			#{commentId}
+  		</foreach>
+  	</delete>
+  	
+</mapper>

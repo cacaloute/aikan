@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	为这个mapper指定一个唯一的namespace，
+	namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+	例如namespace="com.my.mapping.EmpMapper"就是com.my.mapping (包名)+EmpMapper (EmpMapper.xml文件去除后缀)
+-->
+
+<mapper namespace="com.aikan.mapping.RoleTMapper">
+	<!-- 
+		在select标签中编写查询的SQL语句， 设置select标签的id属性为select，id属性值必须是唯一的，不能够重复
+ 		使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
+		resultType="com.my.entity.Emp"就表示将查询结果封装成一个User类的对象返回
+		User类就是users表所对应的实体类
+	-->
+	
+	<select id="selectUrlsById" parameterType="int" resultType="String">
+		select a.aurl aurl
+		from roleAuthorization r left join authorizationT a on r.auId=a.aId
+		where r.roleId=1 and a.aType!=0
+  	</select>
+	
+	<select id="selectById" parameterType="int" resultType="RoleAuthorization">
+		select r.roleId roleId,r.auId auId,a.aName auName,a.aUrl auUrl,a.aType auType,a.aParentId auParentId
+		from roleAuthorization r left join authorizationT a on r.auId=a.aId
+		where r.roleId=#{id}
+  	</select>
+  	
+  	<select id="selectAll" resultType="RoleT">
+		select roleId,roleName,roleInfor
+		from roleT
+		order by roleId
+  	</select>
+  	
+  	<select id="selectRoleById" parameterType="int" resultType="RoleT">
+		select roleId,roleName,roleInfor
+		from roleT
+		where roleId=#{id}
+  	</select>
+  	
+  	<select id="selectRoleAuthorizationById" parameterType="int" resultType="String">
+		select auId
+		from roleAuthorization
+		where roleId=#{roleId}
+  	</select>
+  	
+  	<insert id="insertRoleAuthorization" parameterType="RoleAuthorization">
+  		insert into roleAuthorization(roleId,auId)
+  		values(#{roleId},#{auId})
+  	</insert>
+  	
+  	<delete id="deleteRoleAuthorization" parameterType="int">
+  		delete from roleAuthorization
+  		where roleId=#{roleId}
+  	</delete>
+	  	
+</mapper>

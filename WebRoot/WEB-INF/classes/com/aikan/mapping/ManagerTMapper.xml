@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ 
+
+<mapper namespace="com.aikan.mapping.ManagerTMapper">
+	
+	
+	<resultMap type="ManagerT" id="managerTResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="managerId" column="managerId"/>
+		<!-- 用result属性来映射非主键字段 -->
+		<result property="managerName" column="managerName"/>
+		<result property="managerPassword" column="managerPassword"/>
+	</resultMap>
+	
+	<!-- 查看一个管理员-->
+	<select id="selectOneManager" parameterType="ManagerT" resultMap="managerTResultMap">
+		select * from managerT where managerName=#{managerName} and managerPassword=#{managerPassword}
+  	</select>
+  		<!-- 查看一个管理员-->
+	<select id="selectOneManagerById" parameterType="int" resultMap="managerTResultMap">
+		select * from managerT where managerId=#{managerId}
+  	</select>
+  	  		<!-- 查看一个管理员-->
+	<select id="selectOneManagerByName" parameterType="String" resultMap="managerTResultMap">
+		select * from managerT where managerName=#{managerName}
+  	</select>
+	<!-- 查看所有管理员-->
+	<select id="selectAllManager"  resultMap="managerTResultMap">
+		select * from managerT order by managerId
+  	</select>
+  
+	  	  	
+	<!-- 新增管理员--> 	
+	<insert id="insert" parameterType="ManagerT">
+  		insert into managerT(managerId,managerName,managerPassword) 
+  		values(#{managerId},#{managerName},#{managerPassword})
+  	</insert>
+  	
+  	<!-- 根据章节号删除一组章节 -->
+  	<delete id="deleteByIds">
+  		delete from managerT where managerId in
+  		<foreach collection="array" index="i" item="managerId" open="(" separator="," close=")">
+  			#{managerId}
+  		</foreach>
+  	</delete>
+	 <!-- 修改管理员 -->
+	<update id="update" parameterType="ManagerT">
+		update managerT
+  		set managerName = #{managerName},managerPassword = #{managerPassword}
+  		where managerId=#{managerId}
+	</update> 	
+	  	
+</mapper>

@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/com/aikan/controller/AuthorizationTController.java=UTF-8
+encoding//src/com/aikan/controller/IndexController.java=UTF-8
+encoding//src/com/aikan/entity/Record.java=UTF-8
+encoding//src/com/aikan/mapping/RecordMapper.java=UTF-8
+encoding//src/com/aikan/service/RecordService.java=UTF-8
+encoding//src/com/aikan/service/impl/RecordServiceImpl.java=UTF-8
+encoding//src/com/aikan/util/FileWriterTest.java=UTF-8

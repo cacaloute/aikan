@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+  <!-- 为这个mapper指定一个唯一的namespace -->
+  <mapper namespace="com.aikan.mapping.AuthorTMapper">
+  
+  <!-- 通过resultMap映射实体类属性名和表的字段名对应关系 -->
+  <resultMap type="AuthorT" id="authorTResultMap">
+  	<!-- 用id属性来映射主键字段 -->
+  	<id property="authorId" column="authorId"/>
+  	<!-- 用result属性映射费主键字段 -->
+  	<result property="authorName" column="authorName"/>
+  	<result property="authorImg" column="authorImg"/>
+  	<result property="authorInfor" column="authorInfor"/>
+  	<result property="authorWorksNums" column="authorWorksNums"/>
+  	<result property="authorWordNums" column="authorWordNums"/>
+  	<result property="fansNums" column="fansNums"/>
+  </resultMap>
+  
+   <!-- 根据作者名字查找作者 -->
+  <select id="selectAllAuthorTs"  resultMap="authorTResultMap">
+  	select * from authorT order by authorId
+  </select>
+  
+  <!-- 根据作者名字查找作者 -->
+  <select id="selectName" parameterType="String" resultMap="authorTResultMap">
+  	select * from authorT where authorName = #{authorName}
+  </select>
+  
+  <!-- 根据作者编号查找作者 -->
+  <select id="selectId" parameterType="int" resultMap="authorTResultMap">
+  	select * from authorT where authorId = #{authorId}
+  </select>
+  
+    <!-- 统计一共有多少个作者 -->
+  <select id="countAuthorT"  resultType="int">
+  	select max(authorId) from authorT
+  </select>
+  
+  <insert id="insert" parameterType="AuthorT" >
+  	insert into authorT(authorId,authorName,authorImg,authorInfor,
+            	authorWorksNums,authorWordNums,fansNums)
+	values(#{authorId},#{authorName},#{authorImg},#{authorInfor},#{authorWorksNums},#{authorWordNums},#{fansNums})
+  </insert>
+  
+  <update id="update" parameterType="AuthorT">
+   update authorT
+   set authorName=#{authorName},authorImg=#{authorImg},authorInfor=#{authorInfor},
+       authorWorksNums=#{authorWorksNums},authorWordNums=#{authorWordNums},fansNums=#{fansNums}
+   where authorId=#{authorId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  	delete from authorT where authorId=#{authorId}
+  </delete>
+  
+  <delete id="deleteManyByIds">
+  	delete from authorT where authorId in
+  	<foreach collection="array" index="i" item="authorId" open="(" separator="," close=")">
+  		#{authorId}
+  	</foreach>
+  </delete>
+  
+  
+  </mapper>

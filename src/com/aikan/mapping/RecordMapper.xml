@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ 
+
+<mapper namespace="com.aikan.mapping.RecordMapper">
+	<resultMap type="Record" id="recordResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="recordId" column="recordId"/>
+		<!-- 用result属性来映射非主键字段 -->
+		<result property="userId" column="userId"/>
+		<result property="bookId" column="bookId"/>
+		<result property="chapterName" column="chapterName"/>
+		<result property="chapterId" column="chapterId"/>
+	</resultMap>
+	
+	<!-- 得到最大阅读记录编号-->
+	<select id="selectMaxId"  resultType="int">
+		select max(recordId) 
+		from recordt
+  	</select>
+	<!-- 通过用户名，书籍名,查找阅读记录-->
+	<select id="selectByIds" parameterType="Record" resultMap="recordResultMap">
+		select * 
+		from recordt
+		where userId=#{userId} and bookId=#{bookId}
+  	</select>
+  	 	  	
+	<!-- 添加新的阅读记录 --> 	
+	<insert id="insertRecord" parameterType="Record">
+  		insert into recordt(recordId,userId,bookId,chapterName,chapterId) 
+  		values(#{recordId},#{userId},#{bookId},#{chapterName},#{chapterId})
+  	</insert>
+  	
+  	<!-- 更新阅读记录 -->
+  	<update id="updateRecord" parameterType="Record">
+  		update recordt
+  		set chapterName = #{chapterName},chapterId = #{chapterId}
+  		where userId=#{userId} and bookId=#{bookId}
+  	</update>
+  	
+</mapper>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ 
+
+<mapper namespace="com.aikan.mapping.BookTMapper">
+	
+	
+	<resultMap type="BookT" id="bookTResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="bookId" column="bookId"/>
+		<!-- 用result属性来映射非主键字段 -->
+		<result property="bookName" column="bookName"/>
+		<result property="bookAuthor" column="bookAuthor"/>
+		<result property="authorId" column="authorId"/>
+		<result property="bookTypeId" column="bookTypeId"/>
+		<result property="bookImg" column="bookImg"/>
+		<result property="bookState" column="bookState"/>
+		<result property="bookWordNums" column="bookWordNums"/>
+		<result property="bookChapterNums" column="bookChapterNums"/>
+		<result property="isFree" column="isFree"/>
+		<result property="bookUpDate" column="bookUpDate"/>
+		<result property="bookClickNums" column="bookClickNums"/>
+		<result property="bookInfor" column="bookInfor"/>
+		<!-- 书关联的类型对象 -->
+		<association property="bookType" javaType="BookType">
+			<id property="bookTypeId" column="bookTypeId"/>
+			<result property="bookTypeName" column="bookTypeName"/>
+			<result property="bookTypeSex" column="bookTypeSex"/>
+		</association>
+		<!-- 书关联的作者对象 -->
+		<association property="authorT" javaType="AuthorT">
+			<id property="authorId" column="authorId"/>
+			<result property="authorName" column="authorName"/>
+			<result property="authorImg" column="authorImg"/>
+			<result property="authorInfor" column="authorInfor"/>
+			<result property="authorWorksNums" column="authorWorksNums"/>
+			<result property="authorWordNums" column="authorWordNums"/>
+			<result property="fansNums" column="fansNums"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查看所有书籍-->
+	<select id="selectAll"  resultMap="bookTResultMap">
+		select * 
+		from bookT
+		order by bookId
+  	</select>
+  	
+  	<!-- 根据书籍种类统计数目-->
+	<select id="countBookByType" parameterType="int" resultType="int">
+		select count(bookId) from bookT where bookTypeId=#{bookTypeId} or bookTypeId=10*#{bookTypeId}
+  	</select>
+  	
+<!-- 统计一共有多少本书籍 -->
+  <select id="countBookT"  resultType="int">
+  	select max(bookId) from bookT
+  </select>
+  <!-- 男生爱看，女生爱看 -->
+  <select id="clicknumsandsex" parameterType="String" resultMap="bookTResultMap">
+		select b.*,bt.*
+		from bookT b left join bookType bt
+				on b.bookTypeId=bt.bookTypeId
+		where bt.bookTypeSex=#{bookTypeSex}
+		order by b.bookclicknums desc
+  	</select>  
+  <select id="count" parameterType="BookTCondition" resultType="int">
+		select count(bookId)
+		from bookT 
+		<!-- 用where去替换第一个and或or -->
+		<where>
+			<if test="bookName!=null and bookName.length()>0">
+				 and bookName like #{bookName} 
+			</if>
+			<if test="bookState!=null">
+				 and bookState = #{bookState} 
+			</if>
+			<if test="bookTypeId!=null">
+				 and bookTypeId = #{bookTypeId} 
+			</if>
+		</where>
+  	</select>  
+  
+    <!-- 根据书籍名称查找书籍 -->
+  <select id="selectOneName" parameterType="String" resultMap="bookTResultMap">
+  	select * from bookT where bookName = #{bookName}
+  </select>
+  
+  <!-- 根据书籍上传时间查找书籍 -->
+  <select id="selectByBookUpdate" parameterType="int" resultMap="bookTResultMap">
+  	select * from bookT where bookupdate between to_date(#{beginDate},'yyyy') and to_date(#{endDate},'yyyy')
+  </select>
+  	
+	<!-- 根据书名查找所有符合的图书-->
+  	<select id="selectAllByName" parameterType="String" resultMap="bookTResultMap">
+		select *
+		from bookT 
+		where bookName like #{bookName} 
+		group by bookName
+		order by bookclicknums desc
+  	</select>
+	<!-- 根据书籍id查看所有书籍 -->
+	<select id="selectById" parameterType="int" resultMap="bookTResultMap">
+		select b.bookId,b.bookName,b.bookInfor,b.bookImg,b.bookState,b.bookWordNums,b.bookUpDate,
+				b.bookChapterNums,b.isFree,b.bookClickNums,b.bookTypeId,t.bookTypeName,t.bookTypeSex,
+               b.authorId,a.authorName,a.authorImg,a.authorInfor,a.authorWorksNums,a.fansNums,
+               a.authorWordNums
+        from bookT b left join bookType t
+                    on b.bookTypeId=t.bookTypeId
+                    left join authorT a
+                    on b.authorId=a.authorId
+		where b.bookId = #{bookId}
+  	</select>
+  	
+	<!-- 根据书籍种类查看所有书籍 -->	
+	<select id="selectByBookType" parameterType="int" resultMap="bookTResultMap">
+		select * from bookT where bookTypeId = #{bookTypeId} order by bookclicknums desc
+	</select>
+	
+	<!-- 根据作者名字查看属于他的所有书籍 -->	
+	<select id="selectBooksByAuthorName" parameterType="String" resultMap="bookTResultMap">
+		select b.bookId,b.bookName,b.bookImg,b.bookState,b.bookWordNums,b.bookChapterNums,b.bookUpDate,b.bookTypeId,
+				b.bookClickNums,b.bookInfor,t.bookTypeName,t.bookTypeSex
+		from bookT b left join authorT a
+							on b.authorId = a.authorId
+					left join bookType t
+							on b.bookTypeId=t.bookTypeId
+		where a.authorName = #{authorName}
+	</select>
+	
+	<!-- 根据书籍状态查看所有书籍 -->
+	<select id="selectByBookState" parameterType="String" resultMap="bookTResultMap">
+		select * from bookT where bookState = #{bookState} order by bookclicknums desc
+	</select>
+	
+	<!--按条件分页查看所有书籍 -->
+  	<select id="selectByCondition" parameterType="BookTCondition" resultMap="bookTResultMap">
+  		select lt.*
+		from (
+		      select mt.*,rownum rn
+		      from (
+		            select *
+		            from bookT
+		            <!-- 用where去替换第一个and或or -->
+					<where>
+						<if test="bookName!=null and bookName.length()>0">
+							 and bookName like #{bookName}
+						</if>
+						<if test="authorName!=null and authorName.length()>0">
+							 and authorName like #{authorName}
+						</if>
+						<if test="bookState!=null">
+							 and bookState = #{bookState} 
+						</if>
+						<if test="bookTypeId!=null and bookTypeId!=0">
+							 and bookTypeId = #{bookTypeId} 
+						</if>						
+					</where>
+		            order by bookclicknums desc  
+		            )mt
+		      where rownum&lt;=#{endIndex}
+		      )lt
+		where lt.rn>=#{beginIndex}
+  	</select>  	
+	  	  	
+	<!-- 新增图书 --> 	
+	<insert id="insert" parameterType="BookT">
+  		insert into bookT(bookId,bookName,bookImg,authorId,bookState,bookTypeId,bookWordNums,bookChapterNums,isFree,bookClickNums,bookUpDate,bookInfor) 
+  		values(#{bookId},#{bookName},#{bookImg},#{authorId},#{bookState},#{bookTypeId},
+  				#{bookWordNums},#{bookChapterNums},#{isFree},#{bookClickNums},#{bookUpDate},#{bookInfor} )
+  	</insert>
+  	
+  	<!-- 编辑（修改）图书 -->
+  	<update id="update" parameterType="BookT">
+  		update bookT
+  		set bookName = #{bookName},bookState = #{bookState},bookWordNums=#{bookWordNums},
+  			bookChapterNums=#{bookChapterNums},isFree=#{isFree},bookClickNums=#{bookClickNums}
+  		where bookId=#{bookId}
+  	</update>
+  	
+  	
+  	<!-- 根据主键，删除一本书籍 -->
+  	<delete id="delete" parameterType="int">
+  		delete from bookT where bookId=#{bookId}
+  	</delete>
+  	
+  	
+  	<!-- 根据主键，删除一组书籍 -->
+  	<delete id="deleteByIds">
+  		delete from bookT where bookId in
+  		<foreach collection="array" index="i" item="bookId" open="(" separator="," close=")">
+  			#{bookId}
+  		</foreach>
+  	</delete>
+  		  	
+</mapper>

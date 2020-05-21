@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ 
+
+<mapper namespace="com.aikan.mapping.UserTMapper">
+	
+	
+	<resultMap type="UserT" id="userTResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="userId" column="userId"/>
+		<!-- 用result属性来映射非主键字段 -->
+		<result property="userName" column="userName"/>
+		<result property="userPassword" column="userPassword"/>
+		<result property="userEmail" column="userEmail"/>
+		<result property="userSex" column="userSex"/>
+		<result property="userImg" column="userImg"/>
+	</resultMap>
+	
+	<!-- 根据用户编号查找用户-->
+	<select id="select"  parameterType="int" resultMap="userTResultMap">
+		select * from userT where userId=#{userId}
+  	</select>
+  	
+  	<!-- 查找所有用户-->
+	<select id="selectAll"  resultMap="userTResultMap">
+		select * from userT order by userId
+  	</select>
+  	
+  	<!-- 根据用户性别统计人数-->
+	<select id="countUserBySex" parameterType="String" resultType="int">
+		select count(userId) from userT where userSex=#{userSex}
+  	</select>
+  	
+    <!-- 查看一个管理员-->
+	<select id="selectOneUserTByName" parameterType="String" resultMap="userTResultMap">
+		select * from userT where userName=#{userName}
+  	</select>
+  	
+	  <select id="selectByCondition" parameterType="UserTCondition"  resultMap="userTResultMap">
+	     select lt.*
+	     from(
+	          select mt.*,rownum rn
+	          from(
+	              select *
+	              from userT u 
+	     <!-- 用where去替换第一个and或or -->
+	     <where>
+	        <if test="userName!=null and userName.length()>0">
+	              and u.userName like #{userName}
+	        </if>
+	        <if test="userNumber!=null and userNumber.length()>0">
+	             and u.userEmail like #{userEmail}
+	        </if>
+	        <if test="userSex!=null and userSex.length()>0">
+	             and u.userSex like #{userSex}
+	        </if>
+	     </where>
+	      order by u.userId
+	       ) mt
+	     where rownum&lt;=#{endIndex}
+	    ) lt 
+	   where lt.rn>=#{beginIndex}
+	  </select>
+	  
+  	<select id="count" parameterType="UserTCondition" resultType="int">
+      select count(userId)
+      from userT
+      <!-- 用where去替换第一个and或or -->
+      <where>
+        <if test="userName!=null and userName.length()>0">
+             and userName like #{userName}
+        </if>
+        <if test="userSex!=null and userSex.length()>0">
+             and userSex like #{userSex}
+        </if>
+      </where>
+  </select>
+	  	  	
+	<!-- 添加新用户--> 	
+	<insert id="insert" parameterType="UserT">
+  		insert into userT(userId,userName,userPassword,userEmail,userSex,userImg) 
+  		values(#{userId},#{userName},#{userPassword},#{userEmail},#{userSex},#{userImg})
+  	</insert>
+  	
+  	<delete id="delete" parameterType="int">
+     delete from userT where  userId=#{userId}
+  </delete>
+  
+  	<!-- 根据用户名删除一组用户 -->
+  	<delete id="deleteByIds">
+  		delete from userT where userId in
+  		<foreach collection="array" index="i" item="userId" open="(" separator="," close=")">
+  			#{userId}
+  		</foreach>
+  	</delete>
+	 
+	<update id="update" parameterType="UserT">
+		update userT
+  		set userName = #{userName},userPassword = #{userPassword},
+  			userEmail = #{userEmail},userSex = #{userSex},userImg = #{userImg}
+  		where userId=#{userId}
+	</update> 	
+	  	
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.aikan.mapping.BookShelfMapper">
+  
+  <resultMap type="BookShelf" id="bookShelfResultMap">
+		<!-- 用id属性来映射主键字段 -->
+		<id property="bsId" column="bsId"/>
+		<result property="userId" column="userId"/>
+		<result property="bookId" column="bookId"/>
+  </resultMap>
+  	
+  	<!-- 向书架新添图书 --> 	
+	<insert id="insertBookShelf" parameterType="BookShelf">
+  		insert into bookShelf(bsId,userId,bookId) 
+  		values(#{bsId},#{userId},#{bookId})
+  	</insert>
+
+  	<!-- 根据主键，删除一组书籍 -->
+  	<delete id="deleteManyBooks">
+  		delete from bookShelf where bsId=#{bsId} and bookId in
+  		<foreach collection="bookIds" index="i" item="bookId" open="(" separator="," close=")">
+  			#{bookId}
+  		</foreach>
+  	</delete>
+  	
+  		<!--根据书架编号查找书架-->
+	<select id="selectManyBookShelf"  parameterType="int" resultMap="bookShelfResultMap">
+		select * from bookShelf where bsId=#{bsId}
+  	</select>
+  	
+  </mapper>
