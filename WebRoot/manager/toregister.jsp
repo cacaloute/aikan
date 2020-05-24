@@ -99,8 +99,8 @@ function doRegisterUser(){
 </head>
 <body>
 	<div id="divForm">
-		<h3><img src="${contextPath}/images/icare.PNG" alter="logo" width=210px,height=110px/></h3>
-		<h3>->您的贴心管家！</h3>
+		<h3><img src="${contextPath}/images/icare.PNG"  width=210px,height=110px/></h3>
+		<h3>--&lt;您的贴心管家！</h3>
 		<h1>欢迎来到爱看书屋</h1>
 		<span class="error"></span>
 		<span class="result" style="color:red;font-size:16px;font-weight:bold"></span>

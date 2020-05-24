@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.aikan.entity.BookShelf;
-import com.aikan.entity.BookT;
 
 public interface BookShelfMapper extends Serializable {
 	

@@ -94,7 +94,7 @@
 					</c:when>
 					<c:otherwise>
 						<h4><a href="${contextPath}/toindex.action"><span>首页</span></a>
-							<a href="${contextPath}/manager/userT/tobookshelf.action"></span>我的书架</span></a>
+							<a href="${contextPath}/manager/userT/tobookshelf.action"><span>我的书架</span></a>
 							<a href="${contextPath}/manager/userT/dologout.action"><span><img width="25px" style="border-radius:50%" height="25px" src="${contextPath}/${sessionScope.userT.userImg}"/></span><span>${sessionScope.userT.userName}</span></a>
 						</h4>
 					</c:otherwise>

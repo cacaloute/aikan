@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aikan.entity.BookType;
-import com.aikan.mapping.BookTMapper;
 import com.aikan.mapping.BookTypeMapper;
 import com.aikan.service.BookTypeService;
 

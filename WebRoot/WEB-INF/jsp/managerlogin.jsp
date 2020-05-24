@@ -72,8 +72,8 @@
 		<c:when test="${empty sessionScope.managerT }">
 	<div id="divForm">
 		<h3><img src="${contextPath}/images/icare.PNG" alter="logo" width=210px,height=110px/></h3>
-		<h3>->您的贴心管家！</h4>
-		<h1>欢迎来到爱看书屋</h3>
+		<h3>-&lt;您的贴心管家！</h3>
+		<h1>欢迎来到爱看书屋</h1>
 		<span class="error"></span>
 		<form id="loginForm" method="post"> 	
 			<fieldset>

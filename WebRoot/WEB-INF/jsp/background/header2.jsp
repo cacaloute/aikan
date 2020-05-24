@@ -93,7 +93,6 @@
 				<c:choose>
 					<c:when test="${empty sessionScope.managerT }">	
 							<a href="${contextPath}/background.jsp"><span>管理员未登录</span></a>	
-						</h4>
 					</c:when>
 					<c:otherwise>
 						您好：${sessionScope.managerT.managerName }！

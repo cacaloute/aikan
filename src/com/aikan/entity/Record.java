@@ -1,7 +1,6 @@
 package com.aikan.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 阅读记录
